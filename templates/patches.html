@@ -1,13 +1,11 @@
 {% for patch in patches %}
-<div>
-	<h2>
-		<input name="{{patch.name}}" id="{{patch.name}}" type="checkbox"/>
+<fieldset>
+	<legend>
+		<input name="{{patch.name}}" id="{{patch.name}}"
+			class="patch_box" type="checkbox"/>
 		<label for="{{patch.name}}">{{patch.name}}</label>
-	</h2>
-	{% for option in patch.options %}
-	<div>
-		{{option.name}}
+	</legend>
+	<div id="{{patch.name}}_options">
 	</div>
-	{% endfor %}
-</div>
+</fieldset>
 {% endfor %}
