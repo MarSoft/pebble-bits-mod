@@ -43,9 +43,8 @@ class Option(object):
             self._value = value
             return
 
-        if not isinstance(value, (int, long)):
-            raise ValueError("Not an integer value")
-        if self._bounds and not self.bounds[0] <= value <= self.bounds[1]:
+        if isinstance(value, (int, long)) and \
+                self._bounds and not self.bounds[0] <= value <= self.bounds[1]:
             raise ValueError("Value is out of bounds: %d" % value)
         self._value = value
 
@@ -58,7 +57,7 @@ class Patch(object):
     """
     def __init__(self, name):
         self.name = name[:-4] # strip .php
-        patchfile = open('patches/'+f)
+        patchfile = open('patches/'+name)
         description = ''
         descr_done = False
         self.options = []
@@ -97,7 +96,7 @@ class Patch(object):
                 pass # skip all unrelated lines
 
 patches = []
-def initialize(r):
+def initialize():
     """
     Runs only once.
     Reads all patches
@@ -107,12 +106,12 @@ def initialize(r):
         if not f.endswith('.pbp'):
             continue
         patches.append(Patch(f))
+initialize()
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello World!\n\n')
-        initialize(self.response)
 
 application = webapp2.WSGIApplication([
     ('/', MainPage)
