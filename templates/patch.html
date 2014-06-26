@@ -1,0 +1,13 @@
+{% for patch in patches %}
+<div>
+	<h2>
+		<input name="{{patch.name}}" id="{{patch.name}}" type="checkbox"/>
+		<label for="{{patch.name}}">{{patch.name}}</label>
+	</h2>
+	{% for option in patch.options %}
+	<div>
+		{{option.name}}
+	</div>
+	{% endfor %}
+</div>
+{% endfor %}
