@@ -6,8 +6,29 @@
 </head>
 <body>
 	<h1>PebbleBits Modificator</h1>
+	<p>
+	This site allows you to further modify any Pebble firmware,
+	be it a stock one or PebbleBits generated.
+	Just choose a stock FW version from the checkbox below,
+	or upload your firmware file and choose its version,
+	or use PebbleBits to generate firmware with your preferred fonts
+	and without any patches,
+	then paste a link to it below.
+	</p>
+	<form action="#">
+		<label for="fw_ver">Firmware version:</label>
+		<input id="fw_ver" name="fw_ver" type="text" />
+		<input id="load_btn" type="submit" value="Load"/>
+	</form>
 	<form action="/gen" method="post">
-	<input name="fw_file" type="file"></input>
+		<fieldset><legend>Firmware file</legend>
+			<label for="fw_file">Firmware file:</label>
+			<input id="fw_file" name="fw_file" type="file" />
+			-- OR --
+			<label for="fw_url">URL to firmware:</label>
+			<input id="fw_url" name="fw_url" type="text" />
+			<br/>
+		</fieldset>
 	{% for patch in patches %}
 	<div>
 		<h2>
