@@ -1,0 +1,18 @@
+{% for option in options %}
+	{% if option.is_bool %}
+	<input name="{{patch.name}}_{{option.name}}"
+		id="{{patch.name}}_{{option.name}}"
+		{% if option.value %} checked {% endif %}
+		type="checkbox" class="option_check"
+	/>
+	{% endif %}
+	<label for="{{patch.name}}_{{option.name}}">{{option.name}}</label>
+	{% if not option.is_bool %}
+	<input name="{{patch.name}}_{{option.name}}"
+		id="{{patch.name}}_{{option.name}}"
+		value="{{option.value}}"
+		type="text" class="option_input"
+	/>
+	{% endif %}
+	<p>{{option.description}}</p>
+{% endfor %}
