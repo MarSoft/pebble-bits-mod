@@ -9,6 +9,7 @@ class Option(object):
     """
     def __init__(self, name):
         self.name = name
+        self.description = ""
         self.value = False
         self._bounds = None
         self._multiplier = 1
@@ -149,7 +150,7 @@ class OptionsList(webapp2.RequestHandler):
                 found = patch
                 break
         if found:
-            template = jinja_env.get_template('patches.html')
+            template = jinja_env.get_template('options.html')
             self.response.write(template.render({
                 'patch': found,
                 'options': found.options,
