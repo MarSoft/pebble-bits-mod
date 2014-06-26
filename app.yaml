@@ -12,4 +12,4 @@ handlers:
 
 libraries:
 - name: jinja2
-  version: latest
+  version: 2.6
