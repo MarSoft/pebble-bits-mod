@@ -7,3 +7,7 @@ threadsafe: true
 handlers:
 - url: /.*
   script: bitsmod.application
+
+libraries:
+- name: jinja2
+  version: latest

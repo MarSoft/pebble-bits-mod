@@ -14,12 +14,12 @@
 			<input name="{{patch.name}}" type="checkbox"/>
 			{{patch.name}}
 		</h2>
-	</div>
 		{% for option in patch.options %}
 		<div>
 			{{option.name}}
 		</div>
 		{% endfor %}
+	</div>
 	{% endfor %}
 	<input type="submit" value="Generate!"/>
 	</form>

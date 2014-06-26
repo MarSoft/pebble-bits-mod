@@ -1,5 +1,5 @@
-import webapp2
-import sys,os
+import webapp2, jinja2
+import sys, os
 sys.path.append('utils')
 from patcher import patch_fw
 
@@ -110,12 +110,20 @@ def initialize():
         patches.append(Patch(f))
 initialize()
 
+jinja_env = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)+'/templates'),
+    extensions = ['jinja2.ext.autoescape'],
+    autoescape = True)
+
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello World!\n\n')
-        for p in patches:
-            self.response.write(p.name+'\n')
+        mypatches = []
+        for patch in patches:
+            mypatches.append(patch)
+        template = jinja_env.get_template('index.html')
+        self.response.write(template.render({
+            'patches': mypatches
+        }))
 
 application = webapp2.WSGIApplication([
     ('/', MainPage)
