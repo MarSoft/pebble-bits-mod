@@ -14,5 +14,5 @@
 		type="text" class="option_input"
 	/>
 	{% endif %}
-	<p>{{option.description}}</p>
+	<p>{{option.description | nl2br | safe}}</p>
 {% endfor %}
