@@ -73,6 +73,8 @@ def initialize(r):
         description = ''
         descr_done = False
         opts = []
+        minver = 0
+        maxver = 65535
         for l in patchfile:
             if not descr_done and l.startswith('; '):
                 description += l[2:].strip() + ' '
@@ -94,6 +96,11 @@ def initialize(r):
                 name,val = parts
                 if name in opts:
                     opts[name].value = val
+            elif l.startswith('#ver'):
+                parts = [int(x) for x in l.strip().split(None,2)[1:]]
+                minver = parts[0]
+                if len(parts) > 1:
+                    maxver = parts[1]
             else:
                 pass # skip all unrelated lines
 
