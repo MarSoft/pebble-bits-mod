@@ -57,9 +57,46 @@ class Patch(object):
     or be cloned to represent user-selected options state.
     """
     def __init__(self, name):
-        self.name = name
+        self.name = name[:-4] # strip .php
+        patchfile = open('patches/'+f)
+        description = ''
+        descr_done = False
         self.options = []
+        self.minver = 0
+        self.maxver = 65535
+        for l in patchfile:
+            if not descr_done and l.strip().startswith('; '):
+                description += l[2:].strip() + ' '
+            elif not descr_done and l.strip() == ';':
+                description += '\n' # empty line to \n
+            elif not descr_done and l == '\n':
+                descr_done = True
+                self.description = description
+            elif l.startswith(';@'):
+                parts = l[2:].strip().split(None, 1) # split name from value
+                if not parts:
+                    continue # or report?
+                name=parts[0]
+                opt = Option(name)
+                if len(parts) > 1:
+                    opt.value = parts[1]
+                self.options.append(opt)
+            elif l.startswith('#default'):
+                parts = l.strip().split(None, 2)[1:] # cut off #default word
+                if len(parts) < 2:
+                    continue # illegal command? TODO: skip&report such broken file?
+                name,val = parts
+                if name in self.options:
+                    self.options[name].value = val
+            elif l.startswith('#ver'):
+                parts = [int(x) for x in l.strip().split(None,2)[1:]]
+                self.minver = parts[0]
+                if len(parts) > 1:
+                    self.maxver = parts[1]
+            else:
+                pass # skip all unrelated lines
 
+patches = []
 def initialize(r):
     """
     Runs only once.
@@ -69,40 +106,7 @@ def initialize(r):
     for f in os.listdir('patches'):
         if not f.endswith('.pbp'):
             continue
-        patchfile = open('patches/'+f)
-        description = ''
-        descr_done = False
-        opts = []
-        minver = 0
-        maxver = 65535
-        for l in patchfile:
-            if not descr_done and l.startswith('; '):
-                description += l[2:].strip() + ' '
-            elif l == '\n':
-                descr_done = True
-            elif l.startswith(';@'):
-                parts = l[2:].strip().split(None, 1) # split name from value
-                if not parts:
-                    continue # or report?
-                name=parts[0]
-                opt = Option(name)
-                if len(parts) > 1:
-                    opt.value = parts[1]
-                opts.append(opt)
-            elif l.startswith('#default'):
-                parts = l.strip().split(None, 2)[1:] # cut off #default word
-                if len(parts) < 2:
-                    continue # illegal command? TODO: skip&report such broken file?
-                name,val = parts
-                if name in opts:
-                    opts[name].value = val
-            elif l.startswith('#ver'):
-                parts = [int(x) for x in l.strip().split(None,2)[1:]]
-                minver = parts[0]
-                if len(parts) > 1:
-                    maxver = parts[1]
-            else:
-                pass # skip all unrelated lines
+        patches.append(Patch(f))
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
