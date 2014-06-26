@@ -76,9 +76,15 @@ class Patch(object):
                 if not parts:
                     continue # or report?
                 name=parts[0]
+                default=None
+                if name.startswith('+'):
+                    name = name[1:]
+                    default=True
                 opt = Option(name)
                 if len(parts) > 1:
                     opt.value = parts[1]
+                elif default: # boolean option with default=true
+                    opt.value = True
                 self.options.append(opt)
             elif l.startswith('#default'):
                 parts = l.strip().split(None, 2)[1:] # cut off #default word
