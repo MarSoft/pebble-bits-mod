@@ -1,5 +1,5 @@
 import webapp2
-import sys
+import sys,os
 sys.path.append('utils')
 from patcher import patch_fw
 
@@ -49,17 +49,59 @@ class Option(object):
             raise ValueError("Value is out of bounds: %d" % value)
         self._value = value
 
-def initialize():
+class Patch(object):
+    """
+    This class represents a patch,
+    with all its options.
+    It can represent either "library" patch
+    or be cloned to represent user-selected options state.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.options = []
+
+def initialize(r):
     """
     Runs only once.
     Reads all patches
-    and constructs objects.
+    and constructs objects for them.
     """
+    for f in os.listdir('patches'):
+        if not f.endswith('.pbp'):
+            continue
+        patchfile = open('patches/'+f)
+        description = ''
+        descr_done = False
+        opts = []
+        for l in patchfile:
+            if not descr_done and l.startswith('; '):
+                description += l[2:].strip() + ' '
+            elif l == '\n':
+                descr_done = True
+            elif l.startswith(';@'):
+                parts = l[2:].strip().split(None, 1) # split name from value
+                if not parts:
+                    continue # or report?
+                name=parts[0]
+                opt = Option(name)
+                if len(parts) > 1:
+                    opt.value = parts[1]
+                opts.append(opt)
+            elif l.startswith('#default'):
+                parts = l.strip().split(None, 2)[1:] # cut off #default word
+                if len(parts) < 2:
+                    continue # illegal command? TODO: skip&report such broken file?
+                name,val = parts
+                if name in opts:
+                    opts[name].value = val
+            else:
+                pass # skip all unrelated lines
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello World!\n\n')
+        initialize(self.response)
 
 application = webapp2.WSGIApplication([
     ('/', MainPage)
