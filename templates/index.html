@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+	<title>PebbleBits Modificator</title>
+</head>
+<body>
+	<h1>PebbleBits Modificator</h1>
+	<form action="/gen" method="post">
+	<input name="fw_file" type="file"></input>
+	{% for patch in patches %}
+	<div>
+		<h2>
+			<input name="{{patch.name}}" type="checkbox"/>
+			{{patch.name}}
+		</h2>
+	</div>
+		{% for option in patch.options %}
+		<div>
+			{{option.name}}
+		</div>
+		{% endfor %}
+	{% endfor %}
+	<input type="submit" value="Generate!"/>
+	</form>
+</body>
+</html>
+{% endautoescape %}
