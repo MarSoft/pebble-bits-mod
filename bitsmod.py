@@ -102,7 +102,9 @@ def initialize():
     Reads all patches
     and constructs objects for them.
     """
-    for f in os.listdir('patches'):
+    plist = os.listdir('patches')
+    plist.sort()
+    for f in plist:
         if not f.endswith('.pbp'):
             continue
         patches.append(Patch(f))
@@ -112,6 +114,8 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello World!\n\n')
+        for p in patches:
+            self.response.write(p.name+'\n')
 
 application = webapp2.WSGIApplication([
     ('/', MainPage)
