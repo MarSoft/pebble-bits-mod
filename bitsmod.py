@@ -9,25 +9,7 @@ class Option(object):
     """
     def __init__(self, name):
         self.name = name
-
-class BoolOption(Option):
-    def __init__(self, name, default=False):
-        super.__init__(self,name)
-        self.value = default # use setter for validation
-
-    @property
-    def value(self):
-        return self._value
-    @value.setter
-    def setValue(self, value):
-        if not isinstance(value, bool):
-            raise ValueError(value)
-        self._value = value
-
-class NumericOption(Option):
-    def __init__(self, name, default=0):
-        super.__init__(self, name)
-        self.value = default
+        self.value = False
         self._bounds = None
         self._multiplier = 1
 
@@ -51,9 +33,16 @@ class NumericOption(Option):
 
     @property
     def value(self):
-        return self._value * self.multiplier
+        if isinstance(self._value, bool):
+            return self._value
+        else:
+            return self._value * self.multiplier
     @value.setter
     def value(self, value):
+        if isinstance(value, bool):
+            self._value = value
+            return
+
         if not isinstance(value, (int, long)):
             raise ValueError("Not an integer value")
         if self._bounds and not self.bounds[0] <= value <= self.bounds[1]:
