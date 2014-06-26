@@ -139,7 +139,25 @@ class PatchesList(webapp2.RequestHandler):
             'patches': mypatches
         }))
 
+class OptionsList(webapp2.RequestHandler):
+    def get(self):
+        patchname = self.request.get('patch')
+        found = False
+        for patch in patches:
+            if patch.name == patchname:
+                found = patch
+                break
+        if found:
+            template = jinja_env.get_template('patches.html')
+            self.response.write(template.render({
+                'patch': found,
+                'options': found.options,
+            }))
+        else:
+            self.response.write("Error: Patch not found")
+
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/patches', PatchesList),
+    ('/options', OptionsList),
 ], debug=True)
