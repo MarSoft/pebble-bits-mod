@@ -4,28 +4,29 @@
 <head>
 	<title>PebbleBits Modificator</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.2/jquery.mobile.min.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.2/jquery.mobile.min.js"></script>
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 	<script src="/static/main.js"></script>
 </head>
 <body>
 	<h1>PebbleBits Modificator</h1>
 	<p>
 	This site allows you to further modify any Pebble firmware,
-	be it a stock one or PebbleBits generated.
+	be it a stock one or <a href="http://pebblebits.com/">PebbleBits</a> generated.
 	Just choose a stock FW version from the checkbox below,
 	or upload your firmware file and choose its version,
 	or use PebbleBits to generate firmware with your preferred fonts
 	and without any patches,
 	then paste a link to it below.
 	</p>
-	<form action="#">
+	<form id="version_form" action="#">
 		<label for="fw_ver">Firmware version:</label>
 		<input id="fw_ver" name="fw_ver" type="text" />
 		<input id="load_btn" type="submit" value="Load"/>
 	</form>
 	<form action="/gen" method="post">
-		<fieldset><legend>Firmware file</legend>
+		<fieldset class="ui-widget ui-widget-content">
+			<legend>Firmware file</legend>
 			<label for="fw_file">Firmware file:</label>
 			<input id="fw_file" name="fw_file" type="file" />
 			-- OR --
