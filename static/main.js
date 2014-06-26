@@ -13,7 +13,10 @@ $(function() {
 						if(!$(opts).is(".loaded")) {
 							$.ajax("/options?patch="+id)
 							.done(function(code) {
-								$(opts).html(code);
+								if(code)
+									$(opts).html(code);
+								else
+									$(opts).text("No options");
 								$(opts).addClass("loaded");
 							})
 							.fail(function(x,y,s) {

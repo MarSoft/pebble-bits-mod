@@ -120,6 +120,7 @@ jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)+'/templates'),
     extensions = ['jinja2.ext.autoescape'],
     autoescape = True)
+jinja_env.filters['nl2br'] = lambda x: x.replace('\n', '<br/>\n');
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
