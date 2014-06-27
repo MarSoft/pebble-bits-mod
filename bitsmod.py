@@ -62,9 +62,21 @@ class Patch(object):
         description = ''
         descr_done = False
         self.options = []
+        option = None
+        optdesc = ''
         self.minver = 0
         self.maxver = 65535
         for l in patchfile:
+            if option:
+                if l.startswith('; '):
+                    optdesc += l[2:] # with initial spaces, if any
+                    continue # to next line
+                else:
+                    option.description = optdesc
+                    self.options.append(option)
+                    option = None
+                    optdesc = ''
+                    # and fall to next clause to process current line
             if not descr_done and l.strip().startswith('; '):
                 description += l[2:].strip() + ' '
             elif not descr_done and l.strip() == ';':
@@ -81,12 +93,12 @@ class Patch(object):
                 if name.startswith('+'):
                     name = name[1:]
                     default=True
-                opt = Option(name)
+                option = Option(name)
                 if len(parts) > 1:
-                    opt.value = parts[1]
+                    option.value = parts[1]
                 elif default: # boolean option with default=true
-                    opt.value = True
-                self.options.append(opt)
+                    option.value = True
+                continue # try to read option description
             elif l.startswith('#default'):
                 parts = l.strip().split(None, 2)[1:] # cut off #default word
                 if len(parts) < 2:
