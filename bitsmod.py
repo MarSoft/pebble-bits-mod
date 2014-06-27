@@ -62,6 +62,8 @@ class Patch(object):
     """
     def __init__(self, name, basename=None, patchver=None, fwver=None):
         self.name = name[:-4] # strip .php
+        self.basename = basename
+        self.patchver = patchver
         patchfile = open('patches/'+name)
         description = ''
         descr_done = False
@@ -117,6 +119,13 @@ class Patch(object):
                     self.maxver = parts[1]
             else:
                 pass # skip all unrelated lines
+    def __cmp__(self, other):
+        """
+        Compare by basename, then by revision,
+        then reversively! by required fw version
+        """
+        return cmp(self.basename, other.basename) or cmp(self.patchver, other.patchver) \
+            or cmp(other.minver, self.minver) # note reversed order!
 
 patches = []
 patchmap = {}
@@ -128,21 +137,25 @@ def initialize():
     """
     plist = os.listdir('patches')
     plist.sort()
-    namereg = re.compile(r'(.*)_([0-9][0-9][0-9])(_v([0-9]+))?')
+    namereg = re.compile(r'(.*)_([0-9][0-9b][0-9])(_v([0-9]+))?')
     for f in plist:
         if not f.endswith('.pbp'):
             continue
-        basename = f
+        basename = f[:-4]
         m = namereg.match(f)
         if m:
             basename = m.group(1)
             fwver = m.group(2)
             patchver = m.group(4)
+        else:
+            fwver = 0
+            patchver = 0
         patch = Patch(f, basename, patchver, fwver)
         patches.append(patch)
         if not basename in patchmap:
             patchmap[basename] = []
         patchmap[basename].append(patch)
+    patches.sort()
 initialize()
 
 jinja_env = jinja2.Environment(
@@ -161,13 +174,13 @@ class PatchesList(webapp2.RequestHandler):
         ver = self.request.get('ver')
         ver = int(ver)
         mypatches = []
-        for name in patchmap:
-            good = None
-            for patch in patchmap[name]:
-                if patch.minver <= ver <= patch.maxver:
-                    good = patch
-            if good:
-                mypatches.append(good)
+        mynames = []
+        for patch in patches:
+            if patch.basename in mynames:
+                continue
+            if patch.minver <= ver <= patch.maxver:
+                mypatches.append(patch)
+                mynames.append(patch.basename)
         template = jinja_env.get_template('patches.html')
         self.response.write(template.render({
             'patches': mypatches
