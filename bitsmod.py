@@ -72,6 +72,7 @@ class Patch(object):
         optdesc = ''
         self.minver = 0
         self.maxver = 65535
+        self.internal = False
         for l in patchfile:
             if option:
                 if l.startswith('; '):
@@ -105,6 +106,8 @@ class Patch(object):
                 elif default: # boolean option with default=true
                     option.value = True
                 continue # try to read option description
+            elif l.startswith(';!internal'): # this patch is internal, don't include it
+                self.internal = True
             elif l.startswith('#default'):
                 parts = l.strip().split(None, 2)[1:] # cut off #default word
                 if len(parts) < 2:
@@ -150,7 +153,8 @@ def initialize():
             fwver = 0
             patchver = 0
         patch = Patch(f, basename, patchver, fwver)
-        patches.append(patch)
+        if not patch.internal:
+            patches.append(patch)
     patches.sort()
 initialize()
 
