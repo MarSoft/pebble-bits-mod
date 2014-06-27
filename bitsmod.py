@@ -1,5 +1,5 @@
 import webapp2, jinja2
-import sys, os
+import sys, os, re
 sys.path.append('utils')
 from patcher import patch_fw
 
@@ -60,7 +60,7 @@ class Patch(object):
     It can represent either "library" patch
     or be cloned to represent user-selected options state.
     """
-    def __init__(self, name):
+    def __init__(self, name, basename=None, patchver=None, fwver=None):
         self.name = name[:-4] # strip .php
         patchfile = open('patches/'+name)
         description = ''
@@ -119,6 +119,7 @@ class Patch(object):
                 pass # skip all unrelated lines
 
 patches = []
+patchmap = {}
 def initialize():
     """
     Runs only once.
@@ -127,10 +128,21 @@ def initialize():
     """
     plist = os.listdir('patches')
     plist.sort()
+    namereg = re.compile(r'(.*)_([0-9][0-9][0-9])(_v([0-9]+))?')
     for f in plist:
         if not f.endswith('.pbp'):
             continue
-        patches.append(Patch(f))
+        basename = f
+        m = namereg.match(f)
+        if m:
+            basename = m.group(1)
+            fwver = m.group(2)
+            patchver = m.group(4)
+        patch = Patch(f, basename, patchver, fwver)
+        patches.append(patch)
+        if not basename in patchmap:
+            patchmap[basename] = []
+        patchmap[basename].append(patch)
 initialize()
 
 jinja_env = jinja2.Environment(
@@ -149,9 +161,13 @@ class PatchesList(webapp2.RequestHandler):
         ver = self.request.get('ver')
         ver = int(ver)
         mypatches = []
-        for patch in patches:
-            if patch.minver <= ver <= patch.maxver:
-                mypatches.append(patch)
+        for name in patchmap:
+            good = None
+            for patch in patchmap[name]:
+                if patch.minver <= ver <= patch.maxver:
+                    good = patch
+            if good:
+                mypatches.append(good)
         template = jinja_env.get_template('patches.html')
         self.response.write(template.render({
             'patches': mypatches
