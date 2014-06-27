@@ -214,6 +214,7 @@ class GenerateFw(webapp2.RequestHandler):
         args.output = StringIO.StringIO()
         args.output.close = lambda:None # to avoid destruction by patch_fw
         args.append = True
+        args.ignore_length = False
         args.patch = []
         args.define = []
         for arg in self.request.arguments():
