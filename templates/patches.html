@@ -1,7 +1,7 @@
 {% for patch in patches %}
 <fieldset>
 	<legend>
-		<input name="{{patch.name}}" id="{{patch.name}}"
+		<input name="patch_{{patch.name}}" id="{{patch.name}}"
 			class="patch_box" type="checkbox"/>
 		<label for="{{patch.name}}">{{patch.name}}</label>
 	</legend>
