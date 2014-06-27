@@ -1,5 +1,5 @@
 import webapp2, jinja2
-import sys, os, re
+import sys, os, re, StringIO
 sys.path.append('utils')
 from patcher import patch_fw
 
@@ -201,7 +201,13 @@ class OptionsList(webapp2.RequestHandler):
 
 class GenerateFw(webapp2.RequestHandler):
     def post(self):
-        self.response.write("Not implemented yet")
+        self.response.write("Not implemented yet<br/>")
+        args = lambda:None # just a stub object to attach properties to it
+        args.define = []
+        args.patch = []
+        args.tintin = None
+        print 'URL:', self.request.get('fw_url')
+        print 'File:', repr(self.request.get('fw_file'))
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
