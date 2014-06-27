@@ -222,7 +222,7 @@ class GenerateFw(webapp2.RequestHandler):
                 if "/" in name:
                     print "WARNING: patch name with slash; skipping (for security reasons)"
                     continue
-                args.patch.append("patches/"+name+".pbp")
+                args.patch.append(open("patches/"+name+".pbp"))
             elif arg.startswith("option_"):
                 name = arg[7:]
                 args.define.append(name)
