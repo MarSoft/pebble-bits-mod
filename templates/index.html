@@ -22,7 +22,7 @@
 	<form id="version_form" action="#">
 		<label for="fw_ver">Firmware version:</label>
 		<input id="fw_ver" name="fw_ver" type="text" />
-		<input id="load_btn" type="submit" value="Load"/>
+		<input id="load_btn" type="submit" value="Load" disabled/>
 	</form>
 	<form action="/gen" method="post">
 		<fieldset class="ui-widget ui-widget-content">
@@ -37,7 +37,7 @@
 	<div id="patches">
 		Nothing here.
 	</div>
-	<input type="submit" value="Generate!"/>
+	<input id="gen_btn" type="submit" value="Generate!" disabled />
 	</form>
 </body>
 </html>

@@ -28,13 +28,18 @@ $(function() {
 						$(opts).hide();
 					}
 				});
-			} else
+				$("#gen_btn").removeAttr("disabled");
+			} else {
 				$("#patches").html("No compatible patches for this version");
+				$("#gen_btn").addAttr("disabled");
+			}
 		})
 		.fail(function(x,y,s) {
 			$("#patches").text("Error: "+s);
+			$("#gen_btn").addAttr("disabled");
 		});
 
 		return false;
 	});
+	$("#load_btn").removeAttr("disabled");
 });
