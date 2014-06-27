@@ -15,4 +15,6 @@
 	/>
 	{% endif %}
 	<p>{{option.description | nl2br | safe}}</p>
+{% else %}
+	No options for this patch.
 {% endfor %}
