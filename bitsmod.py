@@ -128,7 +128,6 @@ class Patch(object):
             or cmp(other.minver, self.minver) # note reversed order!
 
 patches = []
-patchmap = {}
 def initialize():
     """
     Runs only once.
@@ -152,9 +151,6 @@ def initialize():
             patchver = 0
         patch = Patch(f, basename, patchver, fwver)
         patches.append(patch)
-        if not basename in patchmap:
-            patchmap[basename] = []
-        patchmap[basename].append(patch)
     patches.sort()
 initialize()
 
