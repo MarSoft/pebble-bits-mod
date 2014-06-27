@@ -201,13 +201,31 @@ class OptionsList(webapp2.RequestHandler):
 
 class GenerateFw(webapp2.RequestHandler):
     def post(self):
-        self.response.write("Not implemented yet<br/>")
         args = lambda:None # just a stub object to attach properties to it
-        args.define = []
+        url = self.request.get('fw_url')
+        tintin = self.request.get('fw_file')
+        if url:
+            print "URLs are not implemented yet"
+        args.tintin = StringIO.StringIO(tintin)
+        args.output = StringIO.StringIO()
+        args.output.close = lambda:None # to avoid destruction by patch_fw
+        args.append = True
         args.patch = []
-        args.tintin = None
-        print 'URL:', self.request.get('fw_url')
-        print 'File:', repr(self.request.get('fw_file'))
+        args.define = []
+        for arg in self.request.arguments():
+            if arg.startswith("patch_"):
+                name = arg[6:]
+                if "/" in name:
+                    print "WARNING: patch name with slash; skipping (for security reasons)"
+                    continue
+                args.patch.append("patches/"+name+".pbp")
+            elif arg.startswith("option_"):
+                name = arg[7:]
+                args.define.append(name)
+        patch_fw(args)
+        self.response.headers["Content-Type"] = "application/octet-stream"
+        self.response.write(args.output.getvalue())
+        StringIO.StringIO.close(args.output)
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
