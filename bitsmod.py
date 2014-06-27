@@ -199,8 +199,13 @@ class OptionsList(webapp2.RequestHandler):
         else:
             self.response.write("Error: Patch not found")
 
+class GenerateFw(webapp2.RequestHandler):
+    def post(self):
+        self.response.write("Not implemented yet")
+
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/patches', PatchesList),
     ('/options', OptionsList),
+    ('/gen', GenerateFw),
 ], debug=True)
