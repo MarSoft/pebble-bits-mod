@@ -24,6 +24,10 @@ class Option(object):
         self._bounds = (lo,hi)
 
     @property
+    def is_bool(self):
+        return isinstance(self.value, bool)
+
+    @property
     def multiplier(self):
         return self._multiplier
     @multiplier.setter
