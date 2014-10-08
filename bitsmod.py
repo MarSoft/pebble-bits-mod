@@ -130,6 +130,7 @@ class Patch(object):
         return cmp(self.basename, other.basename) or cmp(self.patchver, other.patchver) \
             or cmp(other.minver, self.minver) # note reversed order!
 
+
 patches = []
 def initialize():
     """
@@ -209,7 +210,11 @@ class GenerateFw(webapp2.RequestHandler):
         url = self.request.get('fw_url')
         tintin = self.request.get('fw_file')
         if url:
-            print "URLs are not implemented yet"
+            self.response.write("URLs are not implemented yet")
+            return
+        elif not tintin:
+            self.response.write("No source firmware provided, cannot patch!")
+            return
         args.tintin = StringIO.StringIO(tintin)
         args.output = StringIO.StringIO()
         args.output.close = lambda:None # to avoid destruction by patch_fw
