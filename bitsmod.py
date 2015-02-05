@@ -1,5 +1,7 @@
 import webapp2, jinja2
 import sys, os, re, StringIO
+from google.appengine.ext import ndb
+import cloudstorage as gcs
 sys.path.append('utils')
 from patcher import patch_fw
 
@@ -129,7 +131,6 @@ class Patch(object):
         """
         return cmp(self.basename, other.basename) or cmp(self.patchver, other.patchver) \
             or cmp(other.minver, self.minver) # note reversed order!
-
 
 patches = []
 def initialize():
